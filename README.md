@@ -18,6 +18,13 @@ si besoin**
 **2. Préparer un (des) script(s) (psql, SQL pur ou Python, pas d’autres langages ou format) de chargement des données
 originales (CSV généralement) dans le modèle normalisé.**
 
+
+
+Pré_requis :
+1. Créer un utilisateur avec le nom "devi" et le mdp "123456" afin de se connecter à la bdd "bdav".
+2. Créer une bdd nommée "bdav" avec l'utilisateur "devi" comme propriétaire.
+3. Télécharger les données au format CSV et les mettre dans le dossier "data" du projet.
+
 ***
 
 **3. Proposer quelques requêtes analytiques/statistiques intéressantes**
