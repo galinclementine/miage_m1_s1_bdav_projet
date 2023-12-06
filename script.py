@@ -3,7 +3,9 @@ import psycopg
 
 FILE_PATH_CSV = "data/offres-demploi.csv"
 CONNECTION_URL = "postgresql://devi:123456@localhost/bdav?application_name=psyco"
+DELETE_SQL = "sql/delete.sql"
 SCHEMA_SQL = "sql/schema.sql"
+INSERT_SQL = "sql/insert.sql"
 
 def table_exists(table_name, conn):
     try:
@@ -29,7 +31,7 @@ def create_table_from_csv(file_path, table_name, conn):
         # Générer la commande SQL pour créer la table
         create_table_command = f"CREATE TABLE {table_name} (\n"
         for col in columns:
-            create_table_command += f"\"{col}\" TEXT,\n"
+            create_table_command += f"{col} TEXT,\n"
         create_table_command = create_table_command.rstrip(',\n') + "\n);"
 
         # Créer la table
@@ -48,7 +50,7 @@ def insert_data_from_csv(file_path, table_name, conn):
         df = pd.read_csv(file_path)
 
         # Entourer les noms de colonnes de guillemets doubles pour conserver la casse
-        columns = ['"' + col + '"' for col in df.columns]
+        columns = [col for col in df.columns]
         placeholders = ", ".join(["%s" for _ in df.columns])
         insert_query = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({placeholders})"
 
@@ -79,37 +81,39 @@ def execute_sql_file(file_path, conn):
         with conn.cursor() as cur:
             cur.execute(sql_script)
             conn.commit()
-            return "Le script SQL a été exécuté avec succès."
+            return f"Le script SQL {file_path} a été exécuté avec succès."
     except Exception as e:
         return f"Erreur lors de l'exécution du script SQL : {e}"
 
 
-def insert_activites_from_offre_temp(conn):
-    select_query = "SELECT activites_multivalue FROM offre_temp;"
-    insert_query = "INSERT INTO activite (libelle_activite) VALUES (%s) ON CONFLICT (libelle_activite) DO NOTHING;"
+# def insert_activites_from_offre_temp(conn):
+#     select_query = "SELECT activites_multivalue FROM offre_temp;"
+#     insert_query = "INSERT INTO activite (libelle_activite) VALUES (%s) ON CONFLICT (libelle_activite) DO NOTHING;"
 
-    try:
-        with conn.cursor() as cur:
-            # Sélectionner les données de la colonne activites_multivalue
-            cur.execute(select_query)
-            rows = cur.fetchall()
+#     try:
+#         with conn.cursor() as cur:
+#             # Sélectionner les données de la colonne activites_multivalue
+#             cur.execute(select_query)
+#             rows = cur.fetchall()
 
-            # Pour chaque ligne, insérer la valeur de activites_multivalue
-            for row in rows:
-                activites_multivalue = row[0]
-                # Vérifier si la valeur n'est pas NULL ou vide
-                if activites_multivalue:
-                    # Insérer chaque valeur de activites_multivalue
-                    cur.execute(insert_query, (activites_multivalue,))
-            conn.commit()
-            return "Insertion des activités terminée avec succès."
-    except psycopg.DatabaseError as e:
-        return f"Erreur lors de l'insertion des activités : {e}"
+#             # Pour chaque ligne, insérer la valeur de activites_multivalue
+#             for row in rows:
+#                 activites_multivalue = row[0]
+#                 # Vérifier si la valeur n'est pas NULL ou vide
+#                 if activites_multivalue:
+#                     # Insérer chaque valeur de activites_multivalue
+#                     cur.execute(insert_query, (activites_multivalue,))
+#             conn.commit()
+#             return "Insertion des activités terminée avec succès."
+#     except psycopg.DatabaseError as e:
+#         return f"Erreur lors de l'insertion des activités : {e}"
 
 
 if __name__ == "__main__":
     with psycopg.connect(CONNECTION_URL) as the_conn:
+        print(execute_sql_file(DELETE_SQL, the_conn))
+        print(execute_sql_file(SCHEMA_SQL, the_conn))
         print(create_table_from_csv(FILE_PATH_CSV, "offre_temp", the_conn))
         print(insert_data_from_csv(FILE_PATH_CSV, "offre_temp", the_conn))
-        print(execute_sql_file(SCHEMA_SQL, the_conn))
-        print(insert_activites_from_offre_temp(the_conn))
+        # print(insert_activites_from_offre_temp(the_conn))
+        print(execute_sql_file(INSERT_SQL, the_conn))

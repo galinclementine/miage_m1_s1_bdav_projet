@@ -1,9 +1,3 @@
-DROP TABLE IF EXISTS specificite_requise, activite_requise, contact_offre, qualification_requise, savoir_etre_requis
-    , competence_requise, connaissance_requise, langage_requis, permis_requis, couvrir_deplacement, offre, adresse,
-    contact, savoir_etre, competence, experience, niveau_langue, langue, permis, employeur, emploi, duree_temps_partiel,
-    duree_contrat, zone_deplacement, connaissance_info, competence, commune, activite CASCADE;
-
-
 -- Tables simples
 
 CREATE TABLE IF NOT EXISTS activite (
