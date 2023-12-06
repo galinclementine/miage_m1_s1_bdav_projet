@@ -1,11 +1,10 @@
 import pandas as pd
 import psycopg
 
-FILE_PATH_CSV = "data/offres-demploi.csv"
 CONNECTION_URL = "postgresql://devi:123456@localhost/bdav?application_name=psyco"
-DELETE_SQL = "sql/delete.sql"
-SCHEMA_SQL = "sql/schema.sql"
-INSERT_SQL = "sql/insert.sql"
+FILE_PATH_CSV = "data/offres-demploi.csv"
+SCHEMA_SQL = "sql/offre-schema.sql"
+DATASET_SQL = "sql/offre-dataset.sql"
 
 def table_exists(table_name, conn):
     try:
@@ -88,9 +87,7 @@ def execute_sql_file(file_path, conn):
 
 if __name__ == "__main__":
     with psycopg.connect(CONNECTION_URL) as the_conn:
-        print(execute_sql_file(DELETE_SQL, the_conn))
         print(execute_sql_file(SCHEMA_SQL, the_conn))
-        print(create_table_from_csv(FILE_PATH_CSV, "offre_temp", the_conn))
-        print(insert_data_from_csv(FILE_PATH_CSV, "offre_temp", the_conn))
-        # print(insert_activites_from_offre_temp(the_conn))
-        print(execute_sql_file(INSERT_SQL, the_conn))
+        print(create_table_from_csv(FILE_PATH_CSV, "source_csv", the_conn))
+        print(insert_data_from_csv(FILE_PATH_CSV, "source_csv", the_conn))
+        print(execute_sql_file(DATASET_SQL, the_conn))
