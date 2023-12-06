@@ -3,8 +3,8 @@ import psycopg
 
 CONNECTION_URL = "postgresql://devi:123456@localhost/bdav?application_name=psyco"
 FILE_PATH_CSV = "data/offres-demploi.csv"
-SCHEMA_SQL = "sql/offre-schema.sql"
-DATASET_SQL = "sql/offre-dataset.sql"
+SCHEMA_SQL = "sql/offres-schema.sql"
+DATASET_SQL = "sql/offres-dataset.sql"
 
 def table_exists(table_name, conn):
     try:
