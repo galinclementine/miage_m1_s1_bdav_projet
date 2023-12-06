@@ -3,7 +3,7 @@ import psycopg
 
 FILE_PATH_CSV = "data/offres-demploi.csv"
 CONNECTION_URL = "postgresql://devi:123456@localhost/bdav?application_name=psyco"
-
+SCHEMA_SQL = "sql/schema.sql"
 
 def table_exists(table_name, conn):
     try:
@@ -71,7 +71,21 @@ def insert_data_from_csv(file_path, table_name, conn):
         return f"Erreur SQL : {e}"
 
 
+def execute_sql_file(file_path, conn):
+    try:
+        with open(file_path, 'r') as file:
+            sql_script = file.read()
+
+        with conn.cursor() as cur:
+            cur.execute(sql_script)
+            conn.commit()
+            return "Le script SQL a été exécuté avec succès."
+    except Exception as e:
+        return f"Erreur lors de l'exécution du script SQL : {e}"
+
+
 if __name__ == "__main__":
     with psycopg.connect(CONNECTION_URL) as the_conn:
-        print(create_table_from_csv(FILE_PATH_CSV, "offre_temp", the_conn))
-        print(insert_data_from_csv(FILE_PATH_CSV, "offre_temp", the_conn))
+        #print(create_table_from_csv(FILE_PATH_CSV, "offre_temp", the_conn))
+        #print(insert_data_from_csv(FILE_PATH_CSV, "offre_temp", the_conn))
+        print(execute_sql_file(SCHEMA_SQL, the_conn))
