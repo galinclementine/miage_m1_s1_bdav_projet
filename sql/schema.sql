@@ -7,17 +7,17 @@ CREATE TABLE IF NOT EXISTS activite (
 
 CREATE TABLE IF NOT EXISTS commune (
     id_commune INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    libelle_commune TEXT NOT NULL
+    libelle_commune TEXT UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS competence (
     id_competence INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    libelle_competence TEXT NOT NULL
+    libelle_competence TEXT UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS connaissance_info (
     id_connaisance_info INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    libelle_connaisance_info TEXT
+    libelle_connaisance_info TEXT UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS zone_deplacement (
@@ -27,13 +27,13 @@ CREATE TABLE IF NOT EXISTS zone_deplacement (
 CREATE TABLE IF NOT EXISTS duree_contrat (
     id_duree_contrat INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     nombre INTEGER NOT NULL,
-    type_duree TEXT CHECK(type_duree in ('an(s)','jours', 'mois'))
+    type_duree TEXT CHECK(type_duree in ('an(s)','jours', 'mois','NaN'))
 );
 
 CREATE TABLE IF NOT EXISTS duree_temps_partiel (
     id_duree_temps_partiel INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    nombre_heure INTEGER NOT NULL,
-    seuil TEXT CHECK(seuil in ('min', 'max'))
+    nombre_heure INTEGER,
+    seuil TEXT CHECK(seuil in ('min', 'max', 'NaN'))
 );
 
 CREATE TABLE IF NOT EXISTS emploi (
