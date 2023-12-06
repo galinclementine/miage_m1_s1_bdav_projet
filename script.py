@@ -29,7 +29,7 @@ def create_table_from_csv(file_path, table_name, conn):
         # Générer la commande SQL pour créer la table
         create_table_command = f"CREATE TABLE {table_name} (\n"
         for col in columns:
-            create_table_command += f"    \"{col}\" TEXT,\n"
+            create_table_command += f"\"{col}\" TEXT,\n"
         create_table_command = create_table_command.rstrip(',\n') + "\n);"
 
         # Créer la table
@@ -84,8 +84,32 @@ def execute_sql_file(file_path, conn):
         return f"Erreur lors de l'exécution du script SQL : {e}"
 
 
+def insert_activites_from_offre_temp(conn):
+    select_query = "SELECT activites_multivalue FROM offre_temp;"
+    insert_query = "INSERT INTO activite (libelle_activite) VALUES (%s) ON CONFLICT (libelle_activite) DO NOTHING;"
+
+    try:
+        with conn.cursor() as cur:
+            # Sélectionner les données de la colonne activites_multivalue
+            cur.execute(select_query)
+            rows = cur.fetchall()
+
+            # Pour chaque ligne, insérer la valeur de activites_multivalue
+            for row in rows:
+                activites_multivalue = row[0]
+                # Vérifier si la valeur n'est pas NULL ou vide
+                if activites_multivalue:
+                    # Insérer chaque valeur de activites_multivalue
+                    cur.execute(insert_query, (activites_multivalue,))
+            conn.commit()
+            return "Insertion des activités terminée avec succès."
+    except psycopg.DatabaseError as e:
+        return f"Erreur lors de l'insertion des activités : {e}"
+
+
 if __name__ == "__main__":
     with psycopg.connect(CONNECTION_URL) as the_conn:
-        #print(create_table_from_csv(FILE_PATH_CSV, "offre_temp", the_conn))
-        #print(insert_data_from_csv(FILE_PATH_CSV, "offre_temp", the_conn))
+        print(create_table_from_csv(FILE_PATH_CSV, "offre_temp", the_conn))
+        print(insert_data_from_csv(FILE_PATH_CSV, "offre_temp", the_conn))
         print(execute_sql_file(SCHEMA_SQL, the_conn))
+        print(insert_activites_from_offre_temp(the_conn))
