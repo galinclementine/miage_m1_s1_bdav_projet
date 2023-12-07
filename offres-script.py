@@ -37,11 +37,11 @@ def create_table_from_csv(file_path, table_name, conn):
         with conn.cursor() as cur:
             cur.execute(create_table_command)
             conn.commit()
-            return f"La table {table_name} a été créée."
+            return f"La table {table_name} a été créée.\n"
 
     except psycopg.DatabaseError as e:
         # Gérer l'erreur SQL
-        return f"Erreur lors de la création de la table {table_name} : {e}"
+        return f"Erreur lors de la création de la table {table_name} -> {e}\n"
 
 
 def insert_data_from_csv(file_path, table_name, conn):
@@ -64,12 +64,13 @@ def insert_data_from_csv(file_path, table_name, conn):
 
             # Retourner le nombre de lignes insérées
             rows_inserted = cur.rowcount
-            return f"Les données ont été insérées avec succès dans la table {table_name}. Nombre de lignes insérées : {rows_inserted}."
+            return (f"Les données ont été insérées avec succès dans la table {table_name}. "
+                    f"Nombre de lignes insérées -> {rows_inserted}. \n")
 
     except psycopg.DatabaseError as e:
         # Gérer l'erreur SQL et effectuer un rollback
         conn.rollback()
-        return f"Erreur SQL : {e}"
+        return f"Erreur lors de l'insertion des données dans la table {table_name} -> {e}"
 
 
 def execute_sql_file(file_path, conn):
@@ -80,7 +81,8 @@ def execute_sql_file(file_path, conn):
         with conn.cursor() as cur:
             cur.execute(sql_script)
             conn.commit()
-            return f"Le script SQL {file_path} a été exécuté avec succès."
+            res = cur.statusmessage
+            return f"Le script SQL {file_path} a été exécuté avec succès -> {res}\n"
     except Exception as e:
         return f"Erreur lors de l'exécution du script SQL : {e}"
 
