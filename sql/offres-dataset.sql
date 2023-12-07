@@ -154,6 +154,7 @@ ON CONFLICT (libelle_qualification) DO NOTHING;
 INSERT INTO offre.niveau_formation (libelle_niveau_formation)
 SELECT niveauformation
 FROM source_csv
+WHERE niveauformation is not null
 GROUP BY niveauformation
 ORDER BY niveauformation
 ON CONFLICT (libelle_niveau_formation) DO NOTHING;
@@ -165,35 +166,36 @@ GROUP BY titreOffre, codeROME
 ORDER BY titreOffre, codeROME;
 
 INSERT INTO offre.permis (libelle_permis)
-SELECT permis_1_libelle permis FROM source_csv
+SELECT permis_1_libelle permis FROM source_csv WHERE permis_1_libelle is not null
 UNION
-SELECT permis_2_libelle permis FROM source_csv
+SELECT permis_2_libelle permis FROM source_csv WHERE permis_2_libelle is not null
 UNION
-SELECT permis_3_libelle permis FROM source_csv
+SELECT permis_3_libelle permis FROM source_csv WHERE permis_3_libelle is not null
 ORDER BY permis
 ON CONFLICT (libelle_permis) DO NOTHING;
 
 INSERT INTO offre.langue (libelle_langue)
-SELECT langues_1_libelle langue FROM source_csv
+SELECT langues_1_libelle langue FROM source_csv WHERE langues_1_libelle is not null
 UNION
-SELECT langues_2_libelle langue FROM source_csv
+SELECT langues_2_libelle langue FROM source_csv WHERE langues_2_libelle is not null
 UNION
-SELECT langues_3_libelle langue FROM source_csv
+SELECT langues_3_libelle langue FROM source_csv WHERE langues_3_libelle is not null
 ORDER BY langue
 ON CONFLICT (libelle_langue) DO NOTHING;
 
 INSERT INTO offre.niveau_langue (libelle_niveau_langue)
-SELECT langues_1_niveau niveau FROM source_csv
+SELECT langues_1_niveau niveau FROM source_csv WHERE langues_1_niveau is not null
 UNION
-SELECT langues_2_niveau niveau FROM source_csv
+SELECT langues_2_niveau niveau FROM source_csv WHERE langues_2_niveau is not null
 UNION
-SELECT langues_3_niveau niveau FROM source_csv
+SELECT langues_3_niveau niveau FROM source_csv WHERE langues_3_niveau is not null
 ORDER BY niveau
 ON CONFLICT (libelle_niveau_langue) DO NOTHING;
 
 INSERT INTO offre.duree_contrat (nombre, type_duree)
 SELECT duree::INTEGER, uniteduree
 FROM source_csv
+WHERE uniteduree is not null
 GROUP BY duree, uniteduree
 ORDER BY uniteduree, duree::INTEGER;
 
@@ -320,25 +322,33 @@ SELECT
     t.updated::TIMESTAMP,
     t.aPourvoirLe::DATE,
     t.nbPostes::INTEGER,
-    CASE WHEN t.accompagnement::INTEGER = 1 THEN true
-         WHEN t.accompagnement::INTEGER = 0 THEN false
-         ELSE NULL END,
+    CASE t.accompagnement::INTEGER
+        WHEN 1 THEN true
+        WHEN 0 THEN false
+        ELSE NULL
+    END,
     t.datePublication::TIMESTAMP,
     CASE WHEN t.dateArchivage != 'NaN' THEN t.dateArchivage::TIMESTAMP END,
     CASE WHEN t.dateMiseEnAttente != 'NaN' THEN t.dateMiseEnAttente::TIMESTAMP END,
     CASE WHEN t.dateRejet != 'NaN' THEN t.dateRejet::TIMESTAMP END,
-    CASE WHEN t.desQuePossible::INTEGER = 1 THEN true
-         WHEN t.desQuePossible::INTEGER = 0 THEN false
-         ELSE NULL END,
+    CASE t.desQuePossible::INTEGER
+        WHEN 1 THEN true
+        WHEN 0 THEN false
+        ELSE NULL
+    END,
     t.statut,
-    CASE WHEN t.signalee::INTEGER = 1 THEN true
-         WHEN t.signalee::INTEGER = 0 THEN false
-         ELSE NULL END,
+    CASE t.signalee::INTEGER
+        WHEN 1 THEN true
+        WHEN 0 THEN false
+        ELSE NULL
+    END,
     t.dateValidite::DATE,
     t.informationComplementaire,
-    CASE WHEN t.forServiceAccompagnement::INTEGER = 1 THEN true
-         WHEN t.forServiceAccompagnement::INTEGER = 0 THEN false
-         ELSE NULL END,
+    CASE t.forServiceAccompagnement::INTEGER
+        WHEN 1 THEN true
+        WHEN 0 THEN false
+        ELSE NULL
+    END,
     t.titreOffre,
     c.id_commune,
     q.id_qualification,
@@ -346,9 +356,11 @@ SELECT
     nf.id_niveau_formation,
     t.diplome,
     t.certificationLocale,
-    CASE WHEN t.formationExigee::INTEGER = 1 THEN true
-         WHEN t.formationExigee::INTEGER = 0 THEN false
-         ELSE NULL END,
+    CASE t.formationExigee::INTEGER
+        WHEN 1 THEN true
+        WHEN 0 THEN false
+        ELSE NULL
+    END,
     ex.id_experience,
     dc.id_duree_contrat,
     dtp.id_duree_temps_partiel
@@ -437,26 +449,26 @@ ORDER BY r.numero, ci.id_connaisance_info;
 
 INSERT INTO offre.permis_requis (id_offre, id_permis, requis)
 WITH r AS (
-	SELECT numero, permis_1_libelle permis, permis_1_exige requis FROM source_csv
+	SELECT numero, permis_1_libelle permis, permis_1_exige requis FROM source_csv WHERE permis_1_libelle is not null
 	UNION
-	SELECT numero, permis_2_libelle permis, permis_2_exige requis FROM source_csv
+	SELECT numero, permis_2_libelle permis, permis_2_exige requis FROM source_csv WHERE permis_2_libelle is not null
 	UNION
-	SELECT numero, permis_3_libelle permis, permis_3_exige requis FROM source_csv
+	SELECT numero, permis_3_libelle permis, permis_3_exige requis FROM source_csv WHERE permis_3_libelle is not null
 )
-SELECT r.numero, p.id_permis, r.requis
+SELECT r.numero, p.id_permis, r.requis::BOOLEAN
 FROM r LEFT JOIN offre.permis p ON r.permis = p.libelle_permis
 ORDER BY r.numero, p.id_permis, r.requis;
 
 
 INSERT INTO offre.langue_requise (id_offre, id_langue, id_niveau_langue, requis)
 WITH r AS (
-    SELECT numero, langues_1_libelle langue, langues_1_niveau niveau, NULLIF(langues_1_exige, 'NaN') requis FROM source_csv
+    SELECT numero, langues_1_libelle langue, langues_1_niveau niveau, langues_1_exige requis FROM source_csv WHERE langues_1_libelle is not null
     UNION
-    SELECT numero, langues_2_libelle langue, langues_2_niveau niveau, NULLIF(langues_2_exige, 'NaN') requis FROM source_csv
+    SELECT numero, langues_2_libelle langue, langues_2_niveau niveau, langues_2_exige requis FROM source_csv WHERE langues_2_libelle is not null
     UNION
-    SELECT numero, langues_3_libelle langue, langues_3_niveau niveau, NULLIF(langues_3_exige, 'NaN') requis FROM source_csv
+    SELECT numero, langues_3_libelle langue, langues_3_niveau niveau, langues_3_exige requis FROM source_csv WHERE langues_3_libelle is not null
 )
-SELECT r.numero, l.id_langue, nl.id_niveau_langue, r.requis::boolean
+SELECT r.numero, l.id_langue, nl.id_niveau_langue, r.requis::BOOLEAN
 FROM r LEFT JOIN offre.langue l ON r.langue = l.libelle_langue
     LEFT JOIN offre.niveau_langue nl ON r.niveau = nl.libelle_niveau_langue
 ORDER BY r.numero, l.id_langue, r.requis;
@@ -470,7 +482,7 @@ FROM source_csv t LEFT JOIN offre.employeur e
 		AND t.employeur_nompersphysique = e.nom_pers_physique
 		AND t.employeur_prenompersphysique = e.prenom_pers_physique
 		AND t.employeur_email = e.employeur_mail
-	LEFT JOIN offre.contact c
+	JOIN offre.contact c
 	ON t.employeur_nompersphysique = c.nom
 		AND t.employeur_prenompersphysique = c.prenom
 		AND t.contact_telephone = c.telephone

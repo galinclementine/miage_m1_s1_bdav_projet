@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS offre.contact (
       mobile TEXT,
       fax TEXT,
       contact_mail TEXT,
-      id_employeur INTEGER NOT NULL REFERENCES offre.employeur(id_employeur)
+      id_employeur INTEGER REFERENCES offre.employeur(id_employeur)
 );
 
 CREATE TABLE IF NOT EXISTS offre.adresse (
@@ -163,7 +163,7 @@ CREATE TABLE IF NOT EXISTS offre.adresse (
       distribution TEXT,
       subdivision TEXT,
       country TEXT,
-      id_employeur INTEGER NOT NULL REFERENCES offre.employeur(id_employeur)
+      id_employeur INTEGER REFERENCES offre.employeur(id_employeur)
 );
 
 CREATE TABLE IF NOT EXISTS offre.offre (
@@ -187,8 +187,8 @@ CREATE TABLE IF NOT EXISTS offre.offre (
   libelle_emploi TEXT NOT NULL REFERENCES offre.emploi(libelle_emploi),
   id_commune INTEGER NOT NULL REFERENCES offre.commune(id_commune),
   id_qualification INTEGER NOT NULL REFERENCES offre.qualification(id_qualification),
-  id_employeur INTEGER NOT NULL REFERENCES offre.employeur(id_employeur),
-  id_niveau_formation INTEGER NOT NULL REFERENCES offre.niveau_formation(id_niveau_formation),
+  id_employeur INTEGER REFERENCES offre.employeur(id_employeur),
+  id_niveau_formation INTEGER REFERENCES offre.niveau_formation(id_niveau_formation),
   diplome TEXT,
   certification_locale TEXT,
   formation_exigee BOOLEAN NOT NULL,
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS offre.permis_requis (
       PRIMARY KEY (id_offre, id_permis),
       id_offre TEXT REFERENCES offre.offre(id_offre),
       id_permis INTEGER REFERENCES offre.permis(id_permis),
-      requis TEXT NOT NULL CHECK(requis in ('true', 'false', 'NaN'))
+      requis BOOLEAN
 );
 
 CREATE TABLE IF NOT EXISTS offre.langue_requise (

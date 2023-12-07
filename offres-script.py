@@ -2,7 +2,12 @@ import pandas as pd
 import psycopg
 from prettytable import PrettyTable
 
-CONNECTION_URL = "postgresql://devi:123456@localhost/bdav?application_name=psyco"
+USER_BDAV = "devi"
+PASSWORD_BDAV = "123456"
+HOST_BDAV = "localhost"
+PORT_BDAV = "5432"
+DATABASE_BDAV = "bdav"
+CONNECTION_URL = f"postgresql://{USER_BDAV}:{PASSWORD_BDAV}@{HOST_BDAV}:{PORT_BDAV}/{DATABASE_BDAV}?application_name=psyco"
 FILE_PATH_CSV = "data/offres-demploi.csv"
 SCHEMA_SQL = "sql/offres-schema.sql"
 DATASET_SQL = "sql/offres-dataset.sql"
@@ -49,7 +54,10 @@ def insert_data_from_csv(file_path, table_name, conn):
     try:
         df = pd.read_csv(file_path)
 
-        # Entourer les noms de colonnes de guillemets doubles pour conserver la casse
+        # Remplacer les valeurs NaN par NULL
+        df = df.where(pd.notna(df), None)
+
+        # Générer la commande SQL pour insérer les données
         columns = [col for col in df.columns]
         placeholders = ", ".join(["%s" for _ in df.columns])
         insert_query = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({placeholders})"
@@ -66,7 +74,7 @@ def insert_data_from_csv(file_path, table_name, conn):
             # Retourner le nombre de lignes insérées
             rows_inserted = cur.rowcount
             return (f"Les données ont été insérées avec succès dans la table {table_name}. "
-                    f"Nombre de lignes insérées -> {rows_inserted}. \n")
+                    f"Nombre de lignes insérées -> {rows_inserted}")
 
     except psycopg.DatabaseError as e:
         # Gérer l'erreur SQL et effectuer un rollback
@@ -91,7 +99,7 @@ def execute_sql_file(file_path, conn):
                 print(table)  # Affiche le tableau
             else:
                 conn.commit()
-                return f"Le script SQL {file_path} a été exécuté avec succès -> {cur.statusmessage}\n"
+                return f"Le script SQL {file_path} a été exécuté avec succès -> {cur.statusmessage}"
 
     except Exception as e:
         return f"Erreur lors de l'exécution du script SQL : {e}"
@@ -100,15 +108,20 @@ def execute_sql_file(file_path, conn):
 if __name__ == "__main__":
     with psycopg.connect(CONNECTION_URL) as the_conn:
         # Création et insertion des données du fichier CSV
-        create_table_from_csv(FILE_PATH_CSV, "source_csv", the_conn)
-        insert_data_from_csv(FILE_PATH_CSV, "source_csv", the_conn)
-
-        # Création et insertion du schéma final de la bdd
-        execute_sql_file(SCHEMA_SQL, the_conn)
-        execute_sql_file(DATASET_SQL, the_conn)
+        print("\n--- Import des données ---")
+        print(execute_sql_file(SCHEMA_SQL, the_conn))
+        print(create_table_from_csv(FILE_PATH_CSV, "source_csv", the_conn))
+        print(insert_data_from_csv(FILE_PATH_CSV, "source_csv", the_conn))
+        print(execute_sql_file(DATASET_SQL, the_conn))
+        print("--- Import des données terminé ---\n")
 
         print("--- Résultat de la requête 1 : Top 3 des compétences les plus demandées par expérience ---")
-        print(execute_sql_file("sql/requete1.sql", the_conn))
-
+        print(execute_sql_file("sql/offres-requete1.sql", the_conn))
         print("\n--- Résultat de la requête 2 : Nombre d'offres par commune et par type de contrat ---")
-        print(execute_sql_file("sql/requete2.sql", the_conn))
+        print(execute_sql_file("sql/offres-requete2.sql", the_conn))
+        print("\n--- Résultat de la requête 3 : Métiers polyglothes ---")
+        print(execute_sql_file("sql/offres-requete3.sql", the_conn))
+        print("\n--- Résultat de la requête 4 : Métiers couvrant toutes les zones de déplacement ---")
+        print(execute_sql_file("sql/offres-requete4.sql", the_conn))
+        print("\n--- Résultat de la requête 5 : Niveaux de formation demandé en NC ---")
+        print(execute_sql_file("sql/offres-requete5.sql", the_conn))
