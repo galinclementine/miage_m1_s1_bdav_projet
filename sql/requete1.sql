@@ -19,7 +19,7 @@ WITH competence_ranking AS (
         comp.libelle_competence
 )
 SELECT 
-    libelle_experience,
+    libelle_experience AS "Experience",
     MAX(CASE WHEN rank = 1 THEN libelle_competence END) AS "Top 1 Competence",
     MAX(CASE WHEN rank = 2 THEN libelle_competence END) AS "Top 2 Competence",
     MAX(CASE WHEN rank = 3 THEN libelle_competence END) AS "Top 3 Competence"

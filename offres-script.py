@@ -107,8 +107,8 @@ if __name__ == "__main__":
         execute_sql_file(SCHEMA_SQL, the_conn)
         execute_sql_file(DATASET_SQL, the_conn)
 
-        print("--- Exécution de la requête 1 : Top 3 des compétences les plus demandées par expérience ---")
+        print("--- Résultat de la requête 1 : Top 3 des compétences les plus demandées par expérience ---")
         print(execute_sql_file("sql/requete1.sql", the_conn))
 
-        print("\n--- Exécution de la requête 2 : Nombre d'offres par commune et par type de contrat ---")
+        print("\n--- Résultat de la requête 2 : Nombre d'offres par commune et par type de contrat ---")
         print(execute_sql_file("sql/requete2.sql", the_conn))

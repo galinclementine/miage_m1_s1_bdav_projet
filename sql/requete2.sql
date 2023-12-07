@@ -18,10 +18,10 @@ WITH ContratCounts AS (
 ),
 PivotContrats AS (
     SELECT 
-        libelle_commune,
-        SUM(CASE WHEN TypeContrat = 'CDD' THEN nombre_offres ELSE 0 END) AS OffresCDD,
-        SUM(CASE WHEN TypeContrat = 'CDI' THEN nombre_offres ELSE 0 END) AS OffresCDI,
-        SUM(nombre_offres) as TotalOffres
+        libelle_commune AS "Commune",
+        SUM(CASE WHEN TypeContrat = 'CDD' THEN nombre_offres ELSE 0 END) AS "Offres CDD",
+        SUM(CASE WHEN TypeContrat = 'CDI' THEN nombre_offres ELSE 0 END) AS "Offres CDI",
+        SUM(nombre_offres) as "Total"
     FROM 
         ContratCounts
     WHERE 
@@ -34,4 +34,4 @@ SELECT
 FROM 
     PivotContrats
 ORDER BY 
-    TotalOffres DESC;
+    "Total" DESC;
