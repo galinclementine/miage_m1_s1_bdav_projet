@@ -1,3 +1,4 @@
+-- Nombre d'offres par commune et par type de contrat
 WITH ContratCounts AS (
     SELECT 
         c.libelle_commune,

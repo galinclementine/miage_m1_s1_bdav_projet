@@ -166,39 +166,6 @@ CREATE TABLE IF NOT EXISTS offre.adresse (
       id_employeur INTEGER NOT NULL REFERENCES offre.employeur(id_employeur)
 );
 
-
--- Tables avec plusieurs clés étrangères
---
--- CREATE TABLE IF NOT EXISTS offre.offre (
---   id_offre TEXT PRIMARY KEY,
---   id_contrat INTEGER NOT NULL REFERENCES offre.contrat(id_contrat),
---   created DATE NOT NULL,
---   updated DATE NOT NULL,
---   a_pouvoir_le DATE NOT NULL,
---   nb_postes INTEGER NOT NULL,
---   accompagnement INTEGER NOT NULL CHECK(accompagnement in (0, 1)),
---   date_publication DATE NOT NULL,
---   date_archivage DATE,
---   date_mise_en_attente DATE,
---   date_rejet DATE,
---   des_que_possible INTEGER NOT NULL CHECK(des_que_possible in (0, 1)),
---   statut TEXT NOT NULL,
---   signalee INTEGER NOT NULL CHECK(signalee in (0, 1)),
---   date_validite DATE,
---   information_complementaire TEXT,
---   for_service_accompagnement INTEGER NOT NULL CHECK(for_service_accompagnement in (0, 1)),
---   libelle_emploi TEXT NOT NULL REFERENCES offre.emploi(libelle_emploi),
---   id_commune INTEGER NOT NULL REFERENCES offre.commune(id_commune),
---   id_qualification INTEGER NOT NULL REFERENCES offre.qualification(id_qualification),
---   id_employeur INTEGER NOT NULL REFERENCES offre.employeur(id_employeur),
---   id_niveau_formation INTEGER NOT NULL REFERENCES offre.niveau_formation(id_niveau_formation),
---   diplome TEXT,
---   certification_locale TEXT,
---   formation_exigee INTEGER NOT NULL CHECK(formation_exigee in (0, 1)),
---   id_experience INTEGER NOT NULL REFERENCES offre.experience(id_experience),
---   id_duree_contrat INTEGER REFERENCES offre.duree_contrat(id_duree_contrat),
---   id_duree_temps_partiel INTEGER REFERENCES offre.duree_temps_partiel(id_duree_temps_partiel)
--- );
 CREATE TABLE IF NOT EXISTS offre.offre (
   id_offre TEXT PRIMARY KEY,
   id_contrat INTEGER NOT NULL REFERENCES offre.contrat(id_contrat),
@@ -229,8 +196,6 @@ CREATE TABLE IF NOT EXISTS offre.offre (
   id_duree_contrat INTEGER REFERENCES offre.duree_contrat(id_duree_contrat),
   id_duree_temps_partiel INTEGER REFERENCES offre.duree_temps_partiel(id_duree_temps_partiel)
 );
-
-
 
 CREATE TABLE IF NOT EXISTS offre.activite_requise (
   PRIMARY KEY (id_offre, id_activite),
@@ -263,11 +228,10 @@ CREATE TABLE IF NOT EXISTS offre.savoir_etre_requis (
 );
 
 CREATE TABLE IF NOT EXISTS offre.connaissance_info_requise (
-      PRIMARY KEY (id_offre, id_connaisance_info),
-      id_offre TEXT REFERENCES offre.offre(id_offre),
-      id_connaisance_info INTEGER REFERENCES offre.connaissance_info(id_connaisance_info)
+    PRIMARY KEY (id_offre, id_connaisance_info),
+    id_offre TEXT REFERENCES offre.offre(id_offre),
+    id_connaisance_info INTEGER REFERENCES offre.connaissance_info(id_connaisance_info)
 );
-
 
 CREATE TABLE IF NOT EXISTS offre.permis_requis (
       PRIMARY KEY (id_offre, id_permis),
@@ -276,13 +240,6 @@ CREATE TABLE IF NOT EXISTS offre.permis_requis (
       requis TEXT NOT NULL CHECK(requis in ('true', 'false', 'NaN'))
 );
 
--- CREATE TABLE IF NOT EXISTS offre.langue_requise (
---       PRIMARY KEY (id_offre, id_langue, id_niveau_langue),
---       id_offre TEXT REFERENCES offre.offre(id_offre),
---       id_langue INTEGER REFERENCES offre.langue(id_langue),
---       id_niveau_langue INTEGER REFERENCES offre.niveau_langue(id_niveau_langue),
---       requis TEXT NOT NULL CHECK(requis in ('true', 'false', 'NaN'))
--- );
 CREATE TABLE IF NOT EXISTS offre.langue_requise (
     PRIMARY KEY (id_offre, id_langue, id_niveau_langue),
     id_offre TEXT REFERENCES offre.offre(id_offre),
@@ -290,8 +247,6 @@ CREATE TABLE IF NOT EXISTS offre.langue_requise (
     id_niveau_langue INTEGER REFERENCES offre.niveau_langue(id_niveau_langue),
     requis BOOLEAN
 );
-
-
 
 CREATE TABLE IF NOT EXISTS offre.contact_offre (
     PRIMARY KEY (id_offre, id_contact),

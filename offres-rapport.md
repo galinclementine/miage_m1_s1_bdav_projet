@@ -2,15 +2,16 @@
 
 [Jeu de données](https://data.gouv.nc/explore/dataset/offres-demploi/information/?flg=fr-fr&disjunctive.experience&disjunctive.typecontrat&disjunctive.communeemploi&disjunctive.niveauformation&disjunctive.employeur_type&disjunctive.employeur_nomentreprise&disjunctive.specifites_multivalue&disjunctive.zonesdeplacement_multivalue&disjunctive.permis_affichage&disjunctive.langues_affichage)
 
-**Membres du groupe:** Dévi Berges & Clémentine Galin
+**Membres du groupe :** Dévi Berges & Clémentine Galin
 
 ---
 
 ### 1. Faire un schéma E/A avec mocodo et le traduire en relationnel PostgreSQL en le complétant et le simplifiant si besoin
 
-- Modoco -> `mocodo/offres-schema-ea.mcd` (il faut ouvrir le fichier avec le logiciel [Mocodo](https://www.mocodo.net/?mcd=eNqNVcmO2zgQvesr9AE6TKeTHHwTbDoQYEuOLDeSuRC0VHZzoK1JymjP109x0WY7GEMHicVSserVe8WFt_D-TmJCV2S3CZdkS-Js4fOC_tvUQAtoS5ZDBbUK_JIfoSzhbgcjkO1uk0SLwQWqtmx44OdNAVQ0FaDPM48XrlKy3xPfpMAKAVJC4BdQ8guIK20brjPJG4zvspJKAOC74PjFj53iTY3W7ljwC5dmkTddrcTV2yUYekW-Bv7Li-9Owu_YN-n_JofUWyZxHEb7fRgvCY3idWISyZu6ZlyyOgfK61MzYnG7gwEOb6mNegtr4P8V-8l6nRL02u5IRvAQF79qQQEGmUbubd5qbTI2v475Rt5-R5bROlpGmQ0jW8j5iedcTeJMjM-1wHVTw2Giml5eoROBr64tTNd1U1FsgoBWcN0nvW5BSNq-XyX_6NDUCnhgHWLQivHyDwWahsRkiW3CCl_Mxl1_JqAOrl-ca4_xxMdR4JvxmOA3uiy8FdmG8YrcpBRHbyQ80HWSbsMsSuIFMg6LqCDIQSiNMNPUo2WTsxKCUyMqa4BPfgbw7v9HbGukNevo4Dy27Xbnuc658l5N7ohVFi6zG0B3JN1Ge3M6NqXicjzTrj3yK_phAbG--PnqsPEFfHTo4lYYozmdBASGGKgFJZiWpwCmoAi6tjBvhrrtLg0XFIGpj7iSCmTAcs1xdq6tkrUvbbtj6ZC0Bibyd35hZ7BLzA8ZWFOmUBrKGQX8gxOgAEmRXDq65Ec8SSqmOhVIfq6xI873wkpeaIFotfYtGucJ48L0jkoQF46inic5cuzVMih8S6KUkiydkmxitbpkpnhAoUx0ORqf1aVrqN_PJMVyZUTXywwVCiW07zigA79qjhxR8E_sU49A423lNhTxrdeU5UnSF3Cnx-z3jlDtl4bZA7X-QqJEWmmWO18MFpsw_nGwsDjuD5aBTkYbPWutbDGT6G2mSK832UshVzjYpxOutzwHon6m5QxgGupO5ro2eGNpdhZ-okb4fFCPtntkcAZtDzHxbOUmRMnqczf53a69GUTT2XDrPzPPihva-tWc_fMQbvR0M9NmgqZ1nu2a8z46lEY_xsbzZubHcC4MN02l_XVWdfX8LtOG2z8fR1odUkJohhNrT3dhmkVkY6IWHV70VOHVgTcJw5ELpSH_UQB9x6sEz5PQIb3_nwMPrI6D3w10NgVHkLGlswTdrj_JbWCRzcrdl2bvj9n8B7uG17E=)
-- Schéma E/A en version PDF -> `mocodo/offres-schema-ea.pdf`
-- Schéma relationnel -> `sql/offres-schema.sql`
+- Modoco -> [mocodo/offres-schema-ea.mcd](https://www.mocodo.net/?mcd=eNqNVcmO2zgQvesr9AE6TKeTHHwTbDoQYEuOLDeSuRC0VHZzoK1JymjP109x0WY7GEMHicVSserVe8WFt_D-TmJCV2S3CZdkS-Js4fOC_tvUQAtoS5ZDBbUK_JIfoSzhbgcjkO1uk0SLwQWqtmx44OdNAVQ0FaDPM48XrlKy3xPfpMAKAVJC4BdQ8guIK20brjPJG4zvspJKAOC74PjFj53iTY3W7ljwC5dmkTddrcTV2yUYekW-Bv7Li-9Owu_YN-n_JofUWyZxHEb7fRgvCY3idWISyZu6ZlyyOgfK61MzYnG7gwEOb6mNegtr4P8V-8l6nRL02u5IRvAQF79qQQEGmUbubd5qbTI2v475Rt5-R5bROlpGmQ0jW8j5iedcTeJMjM-1wHVTw2Giml5eoROBr64tTNd1U1FsgoBWcN0nvW5BSNq-XyX_6NDUCnhgHWLQivHyDwWahsRkiW3CCl_Mxl1_JqAOrl-ca4_xxMdR4JvxmOA3uiy8FdmG8YrcpBRHbyQ80HWSbsMsSuIFMg6LqCDIQSiNMNPUo2WTsxKCUyMqa4BPfgbw7v9HbGukNevo4Dy27Xbnuc658l5N7ohVFi6zG0B3JN1Ge3M6NqXicjzTrj3yK_phAbG--PnqsPEFfHTo4lYYozmdBASGGKgFJZiWpwCmoAi6tjBvhrrtLg0XFIGpj7iSCmTAcs1xdq6tkrUvbbtj6ZC0Bibyd35hZ7BLzA8ZWFOmUBrKGQX8gxOgAEmRXDq65Ec8SSqmOhVIfq6xI873wkpeaIFotfYtGucJ48L0jkoQF46inic5cuzVMih8S6KUkiydkmxitbpkpnhAoUx0ORqf1aVrqN_PJMVyZUTXywwVCiW07zigA79qjhxR8E_sU49A423lNhTxrdeU5UnSF3Cnx-z3jlDtl4bZA7X-QqJEWmmWO18MFpsw_nGwsDjuD5aBTkYbPWutbDGT6G2mSK832UshVzjYpxOutzwHon6m5QxgGupO5ro2eGNpdhZ-okb4fFCPtntkcAZtDzHxbOUmRMnqczf53a69GUTT2XDrPzPPihva-tWc_fMQbvR0M9NmgqZ1nu2a8z46lEY_xsbzZubHcC4MN02l_XVWdfX8LtOG2z8fR1odUkJohhNrT3dhmkVkY6IWHV70VOHVgTcJw5ELpSH_UQB9x6sEz5PQIb3_nwMPrI6D3w10NgVHkLGlswTdrj_JbWCRzcrdl2bvj9n8B7uG17E=)
+- Schéma E/A en version PDF -> [mocodo/offres-schema-ea.pdf](mocodo/offres-schema-ea.pdf)
+- Schéma relationnel -> [sql/offres-schema.sql](sql/offres-schema.sql)
+
 ---
 
 ### 2. Préparer un (des) script(s) (psql ou Python) de chargement des données originales (CSV généralement) dans le modèle normalisé.
@@ -49,7 +50,6 @@
 6. **Structure principale - Table `offre` :**
    - Conçoit la table `offre`, qui est au cœur du schéma, pour stocker les détails des offres d'emploi.
 
-
 ---
 
 ### 3. Proposer quelques requêtes analytiques/statistiques intéressantes présentes dans le fichier sql
@@ -62,7 +62,6 @@
 4. **Résultat :** Affiche un tableau listant, pour chaque niveau d'expérience, ses trois compétences les plus recherchées.
 
 Cette requête aide à comprendre quelles compétences sont les plus valorisées en fonction de l'expérience dans le marché de l'emploi.
-
 
 **Requête 2 : Nombre d'offres par commune et par type de contrat (CDD, CDI)**
 

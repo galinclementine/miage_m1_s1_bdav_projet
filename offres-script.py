@@ -1,5 +1,6 @@
 import pandas as pd
 import psycopg
+from prettytable import PrettyTable
 
 CONNECTION_URL = "postgresql://devi:123456@localhost/bdav?application_name=psyco"
 FILE_PATH_CSV = "data/offres-demploi.csv"
@@ -80,16 +81,34 @@ def execute_sql_file(file_path, conn):
 
         with conn.cursor() as cur:
             cur.execute(sql_script)
-            conn.commit()
-            res = cur.statusmessage
-            return f"Le script SQL {file_path} a été exécuté avec succès -> {res}\n"
+
+            if cur.description:  # Si le résultat est une requête SELECT
+                # Création d'un tableau avec des en-têtes de colonnes
+                table = PrettyTable([column[0] for column in cur.description])
+                for row in cur.fetchall():
+                    table.add_row(row)
+
+                print(table)  # Affiche le tableau
+            else:
+                conn.commit()
+                return f"Le script SQL {file_path} a été exécuté avec succès -> {cur.statusmessage}\n"
+
     except Exception as e:
         return f"Erreur lors de l'exécution du script SQL : {e}"
 
 
 if __name__ == "__main__":
     with psycopg.connect(CONNECTION_URL) as the_conn:
-        print(execute_sql_file(SCHEMA_SQL, the_conn))
-        print(create_table_from_csv(FILE_PATH_CSV, "source_csv", the_conn))
-        print(insert_data_from_csv(FILE_PATH_CSV, "source_csv", the_conn))
-        print(execute_sql_file(DATASET_SQL, the_conn))
+        # Création et insertion des données du fichier CSV
+        create_table_from_csv(FILE_PATH_CSV, "source_csv", the_conn)
+        insert_data_from_csv(FILE_PATH_CSV, "source_csv", the_conn)
+
+        # Création et insertion du schéma final de la bdd
+        execute_sql_file(SCHEMA_SQL, the_conn)
+        execute_sql_file(DATASET_SQL, the_conn)
+
+        print("--- Exécution de la requête 1 : Top 3 des compétences les plus demandées par expérience ---")
+        print(execute_sql_file("sql/requete1.sql", the_conn))
+
+        print("\n--- Exécution de la requête 2 : Nombre d'offres par commune et par type de contrat ---")
+        print(execute_sql_file("sql/requete2.sql", the_conn))

@@ -158,13 +158,11 @@ GROUP BY niveauformation
 ORDER BY niveauformation
 ON CONFLICT (libelle_niveau_formation) DO NOTHING;
 
-
 INSERT INTO offre.emploi (libelle_emploi, code_rome)
 SELECT titreOffre, codeROME
 FROM source_csv
 GROUP BY titreOffre, codeROME
 ORDER BY titreOffre, codeROME;
-
 
 INSERT INTO offre.permis (libelle_permis)
 SELECT permis_1_libelle permis FROM source_csv
@@ -193,7 +191,6 @@ SELECT langues_3_niveau niveau FROM source_csv
 ORDER BY niveau
 ON CONFLICT (libelle_niveau_langue) DO NOTHING;
 
-
 INSERT INTO offre.duree_contrat (nombre, type_duree)
 SELECT duree::INTEGER, uniteduree
 FROM source_csv
@@ -211,7 +208,6 @@ SELECT
 FROM source_csv
 GROUP BY dureetempspartiel
 ORDER BY dureetempspartiel;
-
 
 INSERT INTO offre.employeur (type_employeur, nom_entreprise, nom_pers_physique, prenom_pers_physique, employeur_mail)
 SELECT 
@@ -262,7 +258,6 @@ GROUP BY
 	t.contact_fax,
 	t.contact_mail;
 
-
 INSERT INTO offre.adresse (id_employeur, delivery_point, complement, street, distribution, subdivision, country)
 SELECT
 	e.id_employeur,
@@ -287,96 +282,6 @@ GROUP BY
 	t.employeur_adressecorrespondance_subdivision,
 	t.employeur_adressecorrespondance_country;
 
-
-
--- Tables avec plusieurs clés étrangères
---
--- INSERT INTO offre.offre (
---     id_offre,
---     id_contrat,
---     created,
---     updated,
---     a_pouvoir_le,
---     nb_postes,
---     accompagnement,
---     date_publication,
---     date_archivage,
---     date_mise_en_attente,
---     date_rejet,
---     des_que_possible,
---     statut,
---     signalee,
---     date_validite,
---     information_complementaire,
---     for_service_accompagnement,
---     libelle_emploi,
---     id_commune,
---     id_qualification,
---     id_employeur,
---     id_niveau_formation,
---     diplome,
---     certification_locale,
---     formation_exigee,
---     id_experience,
---     id_duree_contrat,
---     id_duree_temps_partiel
--- )
--- SELECT
--- 	t.numero,
--- 	ct.id_contrat,
--- 	t.created::TIMESTAMP created,
--- 	t.updated::TIMESTAMP updated,
--- 	t.aPourvoirLe::DATE aPourvoirLe,
--- 	t.nbPostes::INTEGER nbPostes,
--- 	t.accompagnement::INTEGER accompagnement,
--- 	t.datePublication::TIMESTAMP datePublication,
--- 	CASE WHEN t.dateArchivage != 'NaN' THEN t.dateArchivage::TIMESTAMP END dateArchivage,
--- 	CASE WHEN t.dateMiseEnAttente != 'NaN' THEN t.dateMiseEnAttente::TIMESTAMP END dateMiseEnAttente,
--- 	CASE WHEN t.dateRejet != 'NaN' THEN t.dateRejet::TIMESTAMP END dateRejet,
--- 	t.desQuePossible::INTEGER desQuePossible,
--- 	t.statut,
--- 	t.signalee::INTEGER signalee,
--- 	t.dateValidite::DATE dateValidite,
--- 	t.informationComplementaire,
--- 	t.forServiceAccompagnement::INTEGER forServiceAccompagnement,
--- 	t.titreOffre,
--- 	c.id_commune,
---     q.id_qualification,
--- 	e.id_employeur,
--- 	nf.id_niveau_formation,
--- 	t.diplome,
--- 	t.certificationLocale,
--- 	t.formationExigee::INTEGER formationExigee,
--- 	ex.id_experience,
--- 	dc.id_duree_contrat,
--- 	dtp.id_duree_temps_partiel
--- FROM source_csv t
--- 	LEFT JOIN offre.contrat ct
--- 	ON t.typeContrat = ct.libelle_contrat
---     LEFT JOIN offre.employeur e
--- 	ON t.employeur_type = e.type_employeur
--- 		AND t.employeur_nomentreprise = e.nom_entreprise
--- 		AND t.employeur_nompersphysique = e.nom_pers_physique
--- 		AND t.employeur_prenompersphysique = e.prenom_pers_physique
--- 		AND t.employeur_email = e.employeur_mail
--- 	LEFT JOIN offre.commune c
--- 	ON t.communeEmploi = c.libelle_commune
--- 	LEFT JOIN offre.qualification q
--- 	ON t.qualifications = q.libelle_qualification
--- 	LEFT JOIN offre.duree_temps_partiel dtp
--- 	ON substring(t.dureetempspartiel,'([0-9]{1,4})')::INTEGER = dtp.nombre_heure
--- 		AND CASE
--- 				WHEN t.dureetempspartiel like 'Au moins %' THEN 'min'
--- 				WHEN t.dureetempspartiel like 'Moins de %' THEN 'max'
--- 				WHEN t.dureetempspartiel = 'NaN' THEN 'NaN'
--- 			END = dtp.seuil
--- 	LEFT JOIN offre.duree_contrat dc
--- 	ON t.duree::INTEGER = dc.nombre
--- 		AND t.uniteduree = dc.type_duree
--- 	LEFT JOIN offre.niveau_formation nf
--- 	ON t.niveauFormation = nf.libelle_niveau_formation
--- 	LEFT JOIN offre.experience ex
--- 	ON t.experience = ex.libelle_experience;
 
 INSERT INTO offre.offre (
     id_offre,
@@ -469,34 +374,35 @@ FROM source_csv t
 
 
 INSERT INTO offre.activite_requise (id_offre, id_activite)
-WITH r AS (
-	SELECT numero, regexp_split_to_table(activites_multivalue, E',') activite
-	FROM source_csv
-	GROUP BY numero, activite
-)
-SELECT r.numero, a.id_activite
-FROM r LEFT JOIN offre.activite a ON r.activite = a.libelle_activite
-ORDER BY r.numero, a.id_activite;
+    WITH r AS (
+        SELECT numero, regexp_split_to_table(activites_multivalue, E',') activite
+        FROM source_csv
+        GROUP BY numero, activite
+    )
+    SELECT r.numero, a.id_activite
+    FROM r LEFT JOIN offre.activite a ON r.activite = a.libelle_activite
+    ORDER BY r.numero, a.id_activite;
 
-INSERT INTO offre.competence_requise (id_offre, id_competence)
-WITH r AS (
-	SELECT numero, regexp_split_to_table(competences_multivalue, E',') competence
-	FROM source_csv
-	GROUP BY numero, competence
-)
-SELECT r.numero, c.id_competence
-FROM r LEFT JOIN offre.competence c ON r.competence = c.libelle_competence
-ORDER BY r.numero, c.id_competence;
+    INSERT INTO offre.competence_requise (id_offre, id_competence)
+    WITH r AS (
+        SELECT numero, regexp_split_to_table(competences_multivalue, E',') competence
+        FROM source_csv
+        GROUP BY numero, competence
+    )
+    SELECT r.numero, c.id_competence
+    FROM r LEFT JOIN offre.competence c ON r.competence = c.libelle_competence
+    ORDER BY r.numero, c.id_competence;
 
-INSERT INTO offre.specificite_requise (id_offre, id_specificite)
-WITH r AS (
-	SELECT numero, regexp_split_to_table(specifites_multivalue, E',') specificite
-	FROM source_csv
-	GROUP BY numero, specificite
-)
-SELECT r.numero, s.id_specificite
-FROM r LEFT JOIN offre.specificite s ON r.specificite = s.libelle_specificite
-ORDER BY r.numero, s.id_specificite;
+    INSERT INTO offre.specificite_requise (id_offre, id_specificite)
+    WITH r AS (
+        SELECT numero, regexp_split_to_table(specifites_multivalue, E',') specificite
+        FROM source_csv
+        GROUP BY numero, specificite
+    )
+    SELECT r.numero, s.id_specificite
+    FROM r LEFT JOIN offre.specificite s ON r.specificite = s.libelle_specificite
+    ORDER BY r.numero, s.id_specificite;
+
 
 INSERT INTO offre.couvrir_zone_deplacement (id_offre, id_zone_deplacement)
 WITH r AS (
@@ -542,18 +448,6 @@ FROM r LEFT JOIN offre.permis p ON r.permis = p.libelle_permis
 ORDER BY r.numero, p.id_permis, r.requis;
 
 
--- INSERT INTO offre.langue_requise (id_offre, id_langue, id_niveau_langue, requis)
--- WITH r AS (
---     SELECT numero, langues_1_libelle langue, langues_1_niveau niveau, langues_1_exige requis FROM source_csv
---     UNION
---     SELECT numero, langues_2_libelle langue, langues_2_niveau niveau, langues_2_exige requis FROM source_csv
---     UNION
---     SELECT numero, langues_3_libelle langue, langues_3_niveau niveau, langues_3_exige requis FROM source_csv
--- )
--- SELECT r.numero, l.id_langue, nl.id_niveau_langue, r.requis
--- FROM r LEFT JOIN offre.langue l ON r.langue = l.libelle_langue
---     LEFT JOIN offre.niveau_langue nl ON r.niveau = nl.libelle_niveau_langue
--- ORDER BY r.numero, l.id_langue, r.requis;
 INSERT INTO offre.langue_requise (id_offre, id_langue, id_niveau_langue, requis)
 WITH r AS (
     SELECT numero, langues_1_libelle langue, langues_1_niveau niveau, NULLIF(langues_1_exige, 'NaN') requis FROM source_csv
@@ -566,7 +460,6 @@ SELECT r.numero, l.id_langue, nl.id_niveau_langue, r.requis::boolean
 FROM r LEFT JOIN offre.langue l ON r.langue = l.libelle_langue
     LEFT JOIN offre.niveau_langue nl ON r.niveau = nl.libelle_niveau_langue
 ORDER BY r.numero, l.id_langue, r.requis;
-
 
 
 INSERT INTO offre.contact_offre (id_offre, id_contact)

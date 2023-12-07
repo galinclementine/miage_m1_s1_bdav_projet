@@ -1,3 +1,5 @@
+-- Top 3 des compétences les plus demandées par expérience
+
 WITH competence_ranking AS (
     SELECT 
         exp.libelle_experience,
