@@ -9,8 +9,8 @@ PORT_BDAV = "5432"
 DATABASE_BDAV = "bdav"
 CONNECTION_URL = f"postgresql://{USER_BDAV}:{PASSWORD_BDAV}@{HOST_BDAV}:{PORT_BDAV}/{DATABASE_BDAV}?application_name=psyco"
 FILE_PATH_CSV = "data/offres-demploi.csv"
-SCHEMA_SQL = "sql/offres-schema.sql"
-DATASET_SQL = "sql/offres-dataset.sql"
+SCHEMA_SQL = "sql/offres_schema.sql"
+DATASET_SQL = "sql/offres_dataset.sql"
 
 def table_exists(table_name, conn):
     try:
@@ -116,12 +116,12 @@ if __name__ == "__main__":
         print("--- Import des données terminé ---\n")
 
         print("--- Résultat de la requête 1 : Top 3 des compétences les plus demandées par expérience ---")
-        print(execute_sql_file("sql/offres-requete1.sql", the_conn))
+        print(execute_sql_file("sql/offres_requete1.sql", the_conn))
         print("\n--- Résultat de la requête 2 : Nombre d'offres par commune et par type de contrat ---")
-        print(execute_sql_file("sql/offres-requete2.sql", the_conn))
+        print(execute_sql_file("sql/offres_requete2.sql", the_conn))
         print("\n--- Résultat de la requête 3 : Métiers polyglothes ---")
-        print(execute_sql_file("sql/offres-requete3.sql", the_conn))
+        print(execute_sql_file("sql/offres_requete3.sql", the_conn))
         print("\n--- Résultat de la requête 4 : Métiers couvrant toutes les zones de déplacement ---")
-        print(execute_sql_file("sql/offres-requete4.sql", the_conn))
+        print(execute_sql_file("sql/offres_requete4.sql", the_conn))
         print("\n--- Résultat de la requête 5 : Niveaux de formation demandé en NC ---")
-        print(execute_sql_file("sql/offres-requete5.sql", the_conn))
+        print(execute_sql_file("sql/offres_requete5.sql", the_conn))

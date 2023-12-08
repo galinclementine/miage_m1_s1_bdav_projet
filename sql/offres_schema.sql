@@ -6,6 +6,7 @@ SET search_path TO offre, public;
 
 -- Suppression des tables
 
+DROP TABLE IF EXISTS offre.source_csv CASCADE;
 DROP TABLE IF EXISTS offre.contact_offre CASCADE;
 DROP TABLE IF EXISTS offre.langue_requise CASCADE;
 DROP TABLE IF EXISTS offre.permis_requis CASCADE;
