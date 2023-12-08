@@ -9,7 +9,7 @@
 ### Introduction
 
 Nous avons choisi de normaliser un fichier CSV comportant des informations sur les offres d'emploi en Nouvelel-Calédonie.
-Cette document contient 79 colonnes et 254 lignes, nous l'appelerons fichier source.
+Cette document contient 79 colonnes, nous l'appelerons fichier source.
 
 Pour réaliser ce projet, nous avons choisit de travailler avec PostgreSQL et Python.
 Nous avons mis en place différentes étapes :
@@ -33,7 +33,7 @@ Nous avons mis en place différentes étapes :
 1. Télécharger le [jeu de données](https://data.gouv.nc/explore/dataset/offres-demploi/information/?flg=fr-fr&disjunctive.experience&disjunctive.typecontrat&disjunctive.communeemploi&disjunctive.niveauformation&disjunctive.employeur_type&disjunctive.employeur_nomentreprise&disjunctive.specifites_multivalue&disjunctive.zonesdeplacement_multivalue&disjunctive.permis_affichage&disjunctive.langues_affichage) au format CSV et le mettre dans le dossier "***data***" du projet (le nom du fichier doit être `offres-demploi.csv`).
 2. Modifier les variables `USER_BDAV` et `PASSWORD_BDAV` en début de fichier `offres-script.py` (identifiants de connexion à la base `bdav`).
 3. Installer le module PrettyTable (commande `pip install PrettyTable`).
-4. Lancer le script Python `offres-script.py`
+4. Lancer le script Python `offres_script.py`
 
 **Différents packages**
 1. data -> qui contient le ficher source csv uniquement
@@ -51,7 +51,7 @@ Nous avons mis en place différentes étapes :
 
 1. **Création du schéma et configuration du chemin de recherche :**
    - Crée un schéma `offre` s'il n'existe pas déjà.
-   - Définit le chemin de recherche sur `offre, public`.
+   - Définit le chemin de recherche sur `offre`.
 
 2. **Suppression des tables existantes :**
    - Supprime toutes les tables potentiellement existantes pour éviter les conflits lors de la création de nouvelles tables.
